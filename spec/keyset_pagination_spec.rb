@@ -1,33 +1,13 @@
 # frozen_string_literal: true
 
-DB.drop_table? :keyset
-DB.create_table :keyset do
-  primary_key :id
-  integer :a, null: false
-  integer :b, null: false
-  text :name, null: false
-end
+require "spec_helper"
+
+DB.extension(:keyset_pagination)
 
 class KeysetModel < Sequel::Model(:keyset)
 end
 
 describe Sequel::KeysetPagination do
-  before {
-    data = [
-      { id: 1,  a: 1, b: 1, name: "gerard" },
-      { id: 2,  a: 1, b: 2, name: "angela" },
-      { id: 3,  a: 1, b: 3, name: "dorien" },
-      { id: 4,  a: 2, b: 1, name: "franky" },
-      { id: 5,  a: 2, b: 2, name: "benzod" },
-      { id: 6,  a: 3, b: 1, name: "johnny" },
-      { id: 7,  a: 4, b: 1, name: "heaven" },
-      { id: 8,  a: 4, b: 2, name: "easter" },
-      { id: 9,  a: 4, b: 3, name: "ingrid" },
-      { id: 10, a: 5, b: 1, name: "ceasar" }
-    ]
-    DB[:keyset].multi_insert(data)
-  }
-
   context "without cursors" do
     it "raises an aregument error with a helpful message" do
       expect {
@@ -64,7 +44,7 @@ describe Sequel::KeysetPagination do
   context "with single value cursor and a limit" do
     it "generates the correct SQL syntax" do
       result = KeysetModel.order(:id).limit(5).seek(before: 10, after: 5).sql
-      expected = 'SELECT * FROM "keyset" WHERE (("id" > 5) AND ("id" < 10)) ORDER BY "id" LIMIT 5'
+      expected = "SELECT * FROM `keyset` WHERE ((`id` > 5) AND (`id` < 10)) ORDER BY `id` LIMIT 5"
       expect(result).to eq expected
     end
   end
@@ -117,7 +97,7 @@ describe Sequel::KeysetPagination do
   end
 
   context "if an QualifiedIdentifier is used for sorting" do
-    subject { KeysetModel.order(:keyset[:id]) }
+    subject { KeysetModel.order(Sequel[:keyset][:id]) }
 
     it "supports the order type still seeks correctly" do
       results = subject.seek(after: 2).limit(1).map(:id)
