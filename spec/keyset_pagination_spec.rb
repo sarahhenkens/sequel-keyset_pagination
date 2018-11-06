@@ -140,4 +140,29 @@ describe Sequel::KeysetPagination do
       end
     end
   end
+
+  context "Mixing sort direction for two fields" do
+    subject { KeysetModel.order(Sequel.asc(:a), Sequel.desc(:b)) }
+
+    context "without any seeking" do
+      it "returns the records in the expected sort order" do
+        results = subject.map { |r| "#{r.a}-#{r.b}" }
+        expect(results).to eq ["1-3", "1-2", "1-1", "2-2", "2-1", "3-1", "4-3", "4-2", "4-1", "5-1"]
+      end
+    end
+
+    context "with the `after` cursor set in the middle of a primary set" do
+      it "includes the correct secondary set values before going to the next set" do
+        results = subject.seek(after: [1, 2]).limit(3).map { |r| "#{r.a}-#{r.b}" }
+        expect(results).to eq ["1-1", "2-2", "2-1"]
+      end
+    end
+
+    context "with both the `after` and `before` set" do
+      it "correctly slices the dataset between the cursors with the sorting in mind" do
+        results = subject.seek(after: [2, 2], before: [4, 2]).limit(3).map { |r| "#{r.a}-#{r.b}" }
+        expect(results).to eq ["2-1", "3-1", "4-3"]
+      end
+    end
+  end
 end
