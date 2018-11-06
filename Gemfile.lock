@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     sequel-keyset_pagination (0.0.1)
-      sequel (~> 5.12)
+      sequel (~> 5.0)
 
 GEM
   remote: https://rubygems.org/

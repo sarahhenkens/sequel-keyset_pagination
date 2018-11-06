@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage      = "https://github.com/sarahhenkens/sequel-keyset_pagination"
   s.license       = "MIT"
 
-  s.add_runtime_dependency "sequel", "~> 5.12"
+  s.add_runtime_dependency "sequel", "~> 5.0"
   s.add_development_dependency "rspec", "~> 3.8"
   s.add_development_dependency "sqlite3"
 end
