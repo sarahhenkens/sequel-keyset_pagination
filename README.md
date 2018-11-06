@@ -1,5 +1,7 @@
 # Sequel::KeysetPagination
 
+[![Build Status](https://travis-ci.org/sarahhenkens/sequel-keyset_pagination.svg?branch=master)](https://travis-ci.org/sarahhenkens/sequel-keyset_pagination)
+
 Adds support to Sequel Dataset with both an `before` and `after` cursor. Allowing you to slice your dataset in both directions.
 
 Provides cursor support for Relay like pagination: https://facebook.github.io/relay/graphql/connections.htm
