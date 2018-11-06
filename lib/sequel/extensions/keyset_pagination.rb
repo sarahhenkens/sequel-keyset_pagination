@@ -14,15 +14,15 @@ module Sequel
         end
       end
 
-      def self.cursor_conditions(columns, cursor2, reverse: false)
-        zipped = columns.zip(cursor2)
+      def self.cursor_conditions(columns, cursor, reverse: false)
+        zipped = columns.zip(cursor)
         desc = reverse ? :> : :<
         asc = reverse ? :< : :>
 
         # Reduce the dimensions
-        segments = zipped.each_with_index.reverse_each.reduce([]) do |acc, ((column, cursor), idx)|
+        segments = zipped.each_with_index.reverse_each.reduce([]) do |acc, ((column, cursor_value), idx)|
           # We always start of with the leaf
-          segment = [Sequel[column.expression].send(column.descending ? desc : asc, cursor)]
+          segment = [Sequel[column.expression].send(column.descending ? desc : asc, cursor_value)]
 
           # Scope the leaf to its higher level dimensions
           zipped.slice(0, idx).each do |(col, cur)|
