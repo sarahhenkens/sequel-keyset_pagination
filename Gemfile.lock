@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sequel-keyset_pagination (0.0.1)
+    sequel-keyset_pagination (0.0.2)
       sequel (~> 5.0)
 
 GEM
