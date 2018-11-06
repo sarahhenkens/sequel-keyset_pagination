@@ -26,18 +26,22 @@ DB[:records].order(:id).limit(10)
 
 # Pass the last record's ID as the seek cursor to get the next page
 DB[:records].order(:id).limit(5).seek(after: 1125)
+# SELECT * FROM `records` WHERE (`id` > 1125) ORDER BY `id` LIMIT 5
 ```
 
 ### Multiple column ordering (example tv episodes)
 ```ruby
 # To get all episodes after episode 5 of season 1:
 DB[:episodes].order(:season_nr, :ep_nr).limit(5).seek(after: [1, 5])
+# SELECT * FROM `episodes` WHERE (((`ep_nr` > 5) AND (`season_nr` = 1)) OR (`season_nr` > 1)) ORDER BY `season_nr`, `ep_nr` LIMIT 5
 ```
+
 In the above example, both `1x06` up to `1x20` and all future episodes after `s02` will be includes in the dataset.
 
 ### Slicing in both directions
 ```ruby
 # You can pass both an `after` and `before` cursor to seek
 DB[:posts].order(:created_at).seek(before: '2018-10-02T15:00:00Z', after: '2016-10-02T15:00:00Z')
+# SELECT * FROM `posts` WHERE ((`created_at` > '2016-10-02T15:00:00Z') AND (`created_at` < '2018-10-02T15:00:00Z')) ORDER BY `created_at`
 ```
 This will slice your dataset between those two cursors. An unlimited amount of sort columns are supported.
