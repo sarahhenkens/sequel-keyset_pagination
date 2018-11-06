@@ -55,15 +55,11 @@ module Sequel
       end
 
       columns = opts[:order].map { |o| Utils.qualify_order(o) }
+
       conditions = []
 
-      if after
-        conditions << Utils.cursor_conditions(columns, after)
-      end
-
-      if before
-        conditions << Utils.cursor_conditions(columns, before, reverse: true)
-      end
+      conditions << Utils.cursor_conditions(columns, after) if after
+      conditions << Utils.cursor_conditions(columns, before, reverse: true) if before
 
       where(Sequel.&(*conditions))
     end
